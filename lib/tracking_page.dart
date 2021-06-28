@@ -43,16 +43,16 @@ class _TrackingState extends State<Tracking> {
         itemBuilder: (BuildContext context, int index) {
           final user = users[index];
           return ListTile(
-            // leading: CircleAvatar(
-            //   backgroundImage: NetworkImage(user.image),
-            //   backgroundColor: Colors.white,
-            // ),
+            leading: CircleAvatar(
+              backgroundImage: NetworkImage(user.image),
+              backgroundColor: Colors.white,
+            ),
             title: Row(
               children: [Text(user.name), 
-              // Spacer(), Text('₹ ${user.price}')
+              Spacer(), Text('₹ ${user.price}')
               ],
             ),
-            // subtitle: Text('Rank ${user.rank}'),
+            subtitle: Text('Rank ${user.rank}'),
           );
         },
       );
