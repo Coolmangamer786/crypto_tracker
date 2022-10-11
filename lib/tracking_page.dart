@@ -15,7 +15,7 @@ class _TrackingState extends State<Tracking> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Current Price'),
+        title: Text('Crypto Tracker'),
       ),
       body: getDataChart(),
     );
@@ -24,7 +24,7 @@ class _TrackingState extends State<Tracking> {
   Widget getDataChart() => FutureBuilder<List<Coin>>(
         future: CoinApi.getCurrentData(context),
         builder: (context, snapshot) {
-          print('Inside futureB 1st exp');
+          // print('Inside futureB 1st exp');
           final users = snapshot.data;
           if (!snapshot.hasData) {
             return Center(
@@ -36,9 +36,11 @@ class _TrackingState extends State<Tracking> {
         },
       );
 
-  Widget buildChart(List<Coin> users) => ListView.builder(
+  Widget buildChart(List<Coin> users) => ListView.separated(
+        separatorBuilder: ((context, index) => Divider()),
+        padding: EdgeInsets.all(8),
         physics: BouncingScrollPhysics(),
-        itemExtent:80,
+        // itemExtent: 80,
         itemCount: 20,
         itemBuilder: (BuildContext context, int index) {
           final user = users[index];
@@ -47,13 +49,42 @@ class _TrackingState extends State<Tracking> {
               backgroundImage: NetworkImage(user.image),
               backgroundColor: Colors.white,
             ),
-            title: Row(
-              children: [Text(user.name), 
-              Spacer(), Text('₹ ${user.price}')
+            title: Text(
+              '${user.name} (${user.sortform.toUpperCase()})',
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+            //  Row(
+            //   children: [Text(user.name),
+            //   Spacer(), Text('₹ ${user.price}')
+            //   ],
+            // ),
+            // subtitle: Text('Rank ${user.rank}'),
+            trailing: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                  '₹ ${user.price}',
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                ),
+                setPercentage(user.change)
               ],
             ),
-            subtitle: Text('Rank ${user.rank}'),
           );
         },
       );
+
+  Widget setPercentage(double per) {
+    if (per < 0) {
+      per = per + per * -2;
+      return Text(
+        "▼ ${per.toStringAsFixed(2)} %",
+        style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+      );
+    }
+    return Text(
+      "▲ ${per.toStringAsFixed(2)} %",
+      style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+    );
+  }
 }
